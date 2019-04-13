@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -75,8 +76,6 @@ class ButtonBases extends React.Component {
             isPassenger: false,
             price: Math.random() * 3
         };
-
-        console.log(this.props.location.state);
     }
 
     enableDriver = () => {
@@ -101,6 +100,18 @@ class ButtonBases extends React.Component {
                 days: deepCopy
             };
         });
+    };
+
+    submit = () => {
+        this.props.history.push(
+            "/finding",
+            {
+                ...this.props.location.state,
+                isDriver: this.state.isDriver,
+                isPassenger: this.state.isPassenger,
+                days: this.state.days
+            }
+        )
     };
 
     render() {
@@ -226,10 +237,12 @@ class ButtonBases extends React.Component {
                     marginTop: "auto"
                 }}>
                     <Button
+                        onClick={this.submit}
                         variant="outlined">
                         Schedule
                     </Button>
                     <Button
+                        onClick={this.submit}
                         color="primary"
                         variant="contained"
                         style={{
@@ -248,4 +261,4 @@ ButtonBases.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ButtonBases);
+export default withRouter(withStyles(styles)(ButtonBases));
