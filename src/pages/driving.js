@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import Typography from "@material-ui/core/Typography";
 
 class Driving extends React.Component {
     componentDidMount() {

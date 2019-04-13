@@ -28,7 +28,7 @@ class Finding extends React.Component {
                 <Typography
                     gutterBottom
                     variant="h5">
-                    Loading
+                    Looking for a car
                 </Typography>
                 <CircularProgress color="primary" />
             </div>

@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import ScheduleRequest from "../components/schedule-request";
 
 const styles = theme => ({
     center: {
@@ -248,11 +249,7 @@ class ButtonBases extends React.Component {
                     width: "100%",
                     marginTop: "auto"
                 }}>
-                    <Button
-                        onClick={this.submit}
-                        variant="outlined">
-                        Schedule
-                    </Button>
+                    <ScheduleRequest/>
                     <Button
                         onClick={this.submit}
                         color="primary"
