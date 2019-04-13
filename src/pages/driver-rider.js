@@ -74,10 +74,13 @@ class ButtonBases extends React.Component {
             days: [false, false, false, false, false, false, false],
             isDriver: true,
             isPassenger: false,
-            price: Math.random() * 3
+            price: 1 + Math.random() * 2
         };
     }
 
+    /**
+     * Select the "Driver" button
+     */
     enableDriver = () => {
         this.setState({
             isDriver: true,
@@ -85,6 +88,9 @@ class ButtonBases extends React.Component {
         });
     }
 
+    /**
+     * Select the "Passenger" button
+     */
     enablePassenger = () => {
         this.setState({
             isDriver: false,
@@ -92,6 +98,9 @@ class ButtonBases extends React.Component {
         });
     }
 
+    /**
+     * Change the Sunday - Saturday buttons
+     */
     handleChange = index => {
         this.setState(prevState => {
             const deepCopy = [...prevState.days];
@@ -102,6 +111,9 @@ class ButtonBases extends React.Component {
         });
     };
 
+    /**
+     * Submit all data and previous data to next page
+     */
     submit = () => {
         this.props.history.push(
             "/finding",
@@ -139,7 +151,7 @@ class ButtonBases extends React.Component {
                             fontWeight: "bold",
                             display: "inline"
                         }}>
-                        {this.props.location.state.endString}
+                        {this.props.location.state.endLocation.name}
                     </Typography>
                 </div>
 

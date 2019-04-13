@@ -18,6 +18,10 @@ class Reserve extends React.Component {
         };
     }
 
+    /**
+     * Request user's location from the browser and save to state.
+     * Component will not display map until location is retrieved.
+     */
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
             this.setState({
@@ -29,32 +33,68 @@ class Reserve extends React.Component {
         });
     }
 
+    /**
+     * Changes destination string
+     */
     onChange = (event) => {
         this.setState({
             destination: event.target.value
         });
     };
 
+    /**
+     * Get first result for this.state.destination and use it
+     * as the intended location
+     */
     submit = () => {
-        console.log(this.state);
-        this.props.history.push(
-            "/driver-rider",
+        // Create a dummy map object since do not need to render map
+        const map = new window.google.maps.Map(
+            document.getElementById("dummy"),
             {
-                startLocation: this.state.location,
-                endString: this.state.destination
+                center: this.state.location
             }
         );
+
+        // Look up destination query with PlacesService
+        const service = new window.google.maps.places.PlacesService(map);
+        const request = {
+            query: this.state.destination,
+            fields: ["name", "formatted_address", "geometry"]
+        }
+
+        // Call PlacesService
+        service.findPlaceFromQuery(request, (results, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                // Grab first result and pass to next screen
+                if (results.length > 0) {
+                    const result = results[0];
+                    result.location = result.geometry.location.toJSON();
+                    delete result.geometry;
+                    this.props.history.push(
+                        "/driver-rider",
+                        {
+                            startLocation: this.state.location,
+                            endLocation: result
+                        }
+                    );
+                }
+                // No results found
+                else {
+                    alert("Could not find any results");
+                }
+            }
+        });
     };
 
     render() {
-        const firstName = window.localStorage.getItem("name").split(" ")[0];
+        const firstName = this.props.location.state.name.split(" ")[0];
 
         return (
             <div>
                 <div style={{
                     height: "70vh"
                 }}>
-                    <SearchMap location={this.state.location}/>
+                    <SearchMap location={this.state.location} />
                 </div>
                 <Paper style={{
                     padding: "1rem",
@@ -73,7 +113,7 @@ class Reserve extends React.Component {
                             value={this.state.value}
                             variant="outlined" />
                         <IconButton onClick={this.submit}>
-                            <SendIcon/>
+                            <SendIcon />
                         </IconButton>
                     </div>
                     <Typography

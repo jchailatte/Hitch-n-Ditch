@@ -4,13 +4,16 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class Finding extends React.Component {
+    /**
+     * Pretend to be working on finding a neat ride
+     */
     componentDidMount() {
         setTimeout(() => {
             this.props.history.push(
                 "/driving",
                 this.props.location.state
             );
-        }, 5000);
+        }, 3000);
     }
     
     render() {

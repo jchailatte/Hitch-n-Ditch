@@ -4,15 +4,21 @@ import Typography from '@material-ui/core/Typography';
 import { withRouter } from "react-router";
 
 class Login extends React.Component {
+    /**
+     * Successful log in with Google API - get the user's full name
+     */
     onSuccess = (googleUser) => {
-        window.localStorage.setItem(
-            "name",
-            googleUser.getBasicProfile().getName()
+        this.props.history.push(
+            "/reserve",
+            {
+                name: googleUser.getBasicProfile().getName()
+            }
         );
-
-        this.props.history.push("/reserve");
     };
 
+    /**
+     * Error log in case Google sign in fails
+     */
     onFailure = (error) => {
         console.error(error);
     };
