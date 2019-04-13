@@ -1,5 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import Fab from "@material-ui/core/Fab";
+import CloseIcon from "@material-ui/icons/Close";
+
 
 class Driving extends React.Component {
     componentDidMount() {
@@ -29,9 +32,7 @@ class Driving extends React.Component {
                 }
             ]
         };
-        console.log(request);
         directionsService.route(request, (result, status) => {
-            console.log(result);
             if (status == "OK") {
                 directionsDisplay.setDirections(result);
             }
@@ -57,11 +58,20 @@ class Driving extends React.Component {
 
     render() {
         return (
-            <div id="driving-map" style={{
-                height: "100%",
-                width: "100%"
-            }}>
-            </div>
+            <>
+                <div id="driving-map" style={{ height: "100%" }} />
+                <Fab
+                    color="secondary"
+                    onClick={() => this.props.history.push("/reserve")}
+                    style={{
+                        position: "fixed",
+                        bottom: 0,
+                        right: 0,
+                        margin: "1rem"
+                    }}>
+                    <CloseIcon />
+                </Fab>
+            </>
         );
     }
 }

@@ -67,7 +67,7 @@ const styles = theme => ({
     }
 });
 
-class ButtonBases extends React.Component {
+class DriverRider extends React.Component {
     constructor(props) {
         super(props);
 
@@ -75,8 +75,45 @@ class ButtonBases extends React.Component {
             days: [false, false, false, false, false, false, false],
             isDriver: true,
             isPassenger: false,
-            price: 1 + Math.random() * 2
+            price: 1 + Math.random() * 2,
+            placeDetails: undefined
         };
+    }
+
+    /**
+     * Converts place id from previous route into PlaceResult object.
+     * Then serializes appropriate fields to JSON.
+     */
+    componentDidMount() {
+        const service = new window.google.maps.places.PlacesService(
+            document.getElementById("dummy")
+        );
+        const request = {
+            fields: ["formatted_address", "name", "geometry"],
+            placeId: this.props.location.state.endLocationPlaceId
+        };
+
+        service.getDetails(request, (result, status) => {
+            if (status == "OK") {
+                result.location = result.geometry.location.toJSON();
+                delete result.geometry;
+
+                const history = window.localStorage.getItem("history")
+                    ? JSON.parse(window.localStorage.getItem("history"))
+                    : [];
+                
+                history.push({
+                    address: result.formatted_address,
+                    name: result.name
+                });
+
+                window.localStorage.setItem("history", JSON.stringify(history));
+
+                this.setState({
+                    placeDetails: result
+                });
+            }
+        });
     }
 
     /**
@@ -119,7 +156,8 @@ class ButtonBases extends React.Component {
         this.props.history.push(
             "/finding",
             {
-                ...this.props.location.state,
+                startLocation: this.props.location.state.startLocation,
+                endLocation: this.state.placeDetails,
                 isDriver: this.state.isDriver,
                 isPassenger: this.state.isPassenger,
                 days: this.state.days
@@ -131,6 +169,10 @@ class ButtonBases extends React.Component {
         const { classes } = this.props;
 
         const price = this.state.isDriver ? this.state.price * 0.7 : this.state.price;
+
+        if (this.state.placeDetails === undefined) {
+            return null;
+        }
 
         return (
             <div className={classes.root}>
@@ -152,7 +194,7 @@ class ButtonBases extends React.Component {
                             fontWeight: "bold",
                             display: "inline"
                         }}>
-                        {this.props.location.state.endLocation.name}
+                        {this.state.placeDetails.name}
                     </Typography>
                 </div>
 
@@ -164,7 +206,7 @@ class ButtonBases extends React.Component {
                         focusVisibleClassName={classes.focusVisible}
                         onClick={this.enableDriver}
                         style={{
-                            filter: this.state.isDriver ? "" : "grayscale(100%)"
+                            filter: this.state.isDriver ? "default" : "grayscale(100%)"
                         }}>
                         <span
                             className={classes.imageSrc}
@@ -215,7 +257,10 @@ class ButtonBases extends React.Component {
                 <div>
                     <div style={{ width: "100%", marginTop: "2rem" }}>
                         <Typography variant="h6" align="center">
-                            Is this a regular pattern?
+                            Do you drive this route often?
+                        </Typography>
+                        <Typography align="center">
+                            If so, select the days that you do.
                         </Typography>
                     </div>
 
@@ -225,7 +270,8 @@ class ButtonBases extends React.Component {
                                 .map((item, index) => {
                                     return (
                                         <IconButton
-                                            color={this.state.days[index] ? "secondary" : ""}
+                                            color={this.state.days[index] ? "secondary" : "default"}
+                                            key={index}
                                             onClick={() => this.handleChange(index)}>
                                             {item}
                                         </IconButton>
@@ -266,8 +312,8 @@ class ButtonBases extends React.Component {
     }
 }
 
-ButtonBases.propTypes = {
+DriverRider.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withRouter(withStyles(styles)(ButtonBases));
+export default withRouter(withStyles(styles)(DriverRider));

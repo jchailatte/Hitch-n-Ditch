@@ -5,15 +5,18 @@ import { withRouter } from "react-router";
 
 class Login extends React.Component {
     /**
+     * Resets saved name / history
+     */
+    componentDidMount() {
+        window.localStorage.clear();
+    }
+
+    /**
      * Successful log in with Google API - get the user's full name
      */
     onSuccess = (googleUser) => {
-        this.props.history.push(
-            "/reserve",
-            {
-                name: googleUser.getBasicProfile().getName()
-            }
-        );
+        window.localStorage.setItem("name", googleUser.getBasicProfile().getName());
+        this.props.history.push("/reserve");
     };
 
     /**
@@ -25,29 +28,24 @@ class Login extends React.Component {
 
     render() {
         return (
-            <div style={{
-                display: "flex",
-                height: "100%",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center"
-            }}>
-                <div style={{
-                    background: "white",
-                    borderRadius: "100%",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
-                    padding: "2.5rem",
-                    height: "10rem",
-                    width: "10rem"
+            <div
+                className="background-image"
+                style={{
+                    display: "flex",
+                    height: "100%",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "url('static/img/traffic.png')"
                 }}>
-                    <img
-                        style={{
-                            height: "100%"
-                        }}
-                        src="/static/img/car.png" />
-                </div>
                 <Typography
                     gutterBottom
+                    style={{
+                        fontWeight: "bold",
+                        color: "white",
+                        background: "rgba(0, 0, 0, .75)",
+                        padding: "1rem"
+                    }}
                     variant="h3">
                     Hitch 'n Ditch
                 </Typography>

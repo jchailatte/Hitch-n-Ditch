@@ -7,6 +7,9 @@ import TextField from "@material-ui/core/TextField";
 import SearchMap from "../components/search-map";
 import IconButton from "@material-ui/core/IconButton";
 import SendIcon from "@material-ui/icons/Send";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 class Reserve extends React.Component {
     constructor(props) {
@@ -56,25 +59,23 @@ class Reserve extends React.Component {
         );
 
         // Look up destination query with PlacesService
-        const service = new window.google.maps.places.PlacesService(map);
+        // const service = new window.google.maps.places.PlacesService(map);
+        const service = new window.google.maps.places.AutocompleteService();
         const request = {
-            query: this.state.destination,
-            fields: ["name", "formatted_address", "geometry"]
-        }
+            input: this.state.destination,
+            location: new window.google.maps.LatLng(this.state.location.lat, this.state.location.lng),
+            radius: 40233.6
+        };
 
-        // Call PlacesService
-        service.findPlaceFromQuery(request, (results, status) => {
+        service.getPlacePredictions(request, (results, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
                 // Grab first result and pass to next screen
                 if (results.length > 0) {
-                    const result = results[0];
-                    result.location = result.geometry.location.toJSON();
-                    delete result.geometry;
                     this.props.history.push(
                         "/driver-rider",
                         {
                             startLocation: this.state.location,
-                            endLocation: result
+                            endLocationPlaceId: results[0].place_id
                         }
                     );
                 }
@@ -87,7 +88,10 @@ class Reserve extends React.Component {
     };
 
     render() {
-        const firstName = this.props.location.state.name.split(" ")[0];
+        const firstName = window.localStorage.getItem("name").split(" ")[0];
+        const history = window.localStorage.getItem("history")
+            ? JSON.parse(window.localStorage.getItem("history"))
+            : [];
 
         return (
             <div>
@@ -123,9 +127,26 @@ class Reserve extends React.Component {
                         variant="h6">
                         History
                     </Typography>
-                    <Typography>
-                        No recent rides.
-                    </Typography>
+                    
+                    {
+                        history.length > 0
+                            ? (
+                                <List>
+                                    {
+                                        history.map((item, index) => {
+                                            return (
+                                                <ListItem key={index}>
+                                                    <ListItemText
+                                                        primary={item.name}
+                                                        secondary={item.address}/>
+                                                </ListItem>
+                                            );
+                                        })
+                                    }
+                                </List>
+                            )
+                            : <Typography>No ride history.</Typography>
+                    }
                 </Paper>
             </div>
         );
