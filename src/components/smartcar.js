@@ -36,7 +36,7 @@ class SmartCar extends React.Component {
             window.smartcar = new Smartcar({
                 clientId: '55c8e6b7-859b-4b53-9f23-9199841a7e29',
                 redirectUri: "https://javascript-sdk.smartcar.com/redirect-2.0.0?app_origin=http://localhost:8080",
-                scope: ['read_vehicle_info'],
+                scope: ['read_vehicle_info', 'read_location', 'read_odometer', 'read_vin', 'control_security', 'control_security:unlock', 'control_security:lock'],
                 testMode: false,
                 onComplete: this.onComplete,
             });
