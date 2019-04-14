@@ -9,7 +9,10 @@ import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CarIcon from "@material-ui/icons/TimeToLeave";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-import SmartcarApi from "./smartcar-api";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import Smartcar from "@smartcar/auth";
+import Button from "@material-ui/core/Button";
 
 const styles = {
     grid: {
@@ -24,11 +27,64 @@ const styles = {
 };
 
 class SmartCar extends React.Component {
+    static BACKEND_SERVER = "https://us-central1-hacksc-2019-1555206075460.cloudfunctions.net/hnd";
+    static accessToken;
+    static vehicle;
+
+    authorize = () => {
+        if (!window.smartcar) {
+            window.smartcar = new Smartcar({
+                clientId: '55c8e6b7-859b-4b53-9f23-9199841a7e29',
+                redirectUri: "https://javascript-sdk.smartcar.com/redirect-2.0.0?app_origin=http://localhost:8080",
+                scope: ['read_vehicle_info'],
+                testMode: false,
+                onComplete: this.onComplete,
+            });
+        }
+        window.smartcar.openDialog({ forcePrompt: true });
+    };
+
+    onComplete = (err, code, status) => {
+        fetch(`${SmartCar.BACKEND_SERVER}/?method=exchange&code=${code}`)
+            .then(response => response.json())
+            .then(data => {
+                SmartCar.accessToken = data;
+                this.getVehicleData();
+                this.setState({
+                    qRerender: true
+                }, () => this.setState({ qRender: false }));
+            });
+    };
+
+    getVehicleData = () => {
+        fetch(`${SmartCar.BACKEND_SERVER}/?method=vehicle&accessToken=${SmartCar.accessToken.accessToken}`)
+            .then(response => response.json())
+            .then(data => {
+                SmartCar.vehicle = data;
+                this.setState({
+                    qRender: true
+                }, () => this.setState({ qRender: false }))
+            });
+    };
+
+    static unlockVehicle = async () => {
+        return await fetch(`${SmartCar.BACKEND_SERVER}/?method=unlock&accessToken=${SmartCar.accessToken.accessToken}`)
+            .then(response => response.json())
+            .then(data => data);
+    };
+
+    static lockVehicle = async () => {
+        return await fetch(`${SmartCar.BACKEND_SERVER}/?method=lock&accessToken=${SmartCar.accessToken.accessToken}`)
+            .then(response => response.json())
+            .then(data => data);
+    };
+
     constructor(props) {
         super(props);
 
         this.state = {
-            open: false
+            open: false,
+            qRerender: false
         };
     }
 
@@ -67,11 +123,87 @@ class SmartCar extends React.Component {
                                 <CloseIcon />
                             </IconButton>
                             <Typography variant="h6" color="inherit" className={classes.flex}>
-                                Authenticate your car
+                                Your Car
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    <SmartcarApi/>
+                    {
+                        SmartCar.accessToken
+                            ? (
+                                <div style={{ margin: "1rem" }}>
+                                    {
+                                        SmartCar.vehicle
+                                        && (
+                                            <>
+                                                <Typography
+                                                    align="center"
+                                                    variant="h5">
+                                                    Make
+                                                </Typography>
+                                                <Typography
+                                                    align="center"
+                                                    gutterBottom>
+                                                    {SmartCar.vehicle.make}
+                                                </Typography>
+                                                <Typography
+                                                    align="center"
+                                                    variant="h5">
+                                                    Model
+                                                </Typography>
+                                                <Typography
+                                                    align="center"
+                                                    gutterBottom>
+                                                    {SmartCar.vehicle.model}
+                                                </Typography>
+                                                <Typography
+                                                    align="center"
+                                                    variant="h5">
+                                                    Year
+                                                </Typography>
+                                                <Typography
+                                                    align="center"
+                                                    gutterBottom>
+                                                    {SmartCar.vehicle.year}
+                                                </Typography>
+                                                <img
+                                                    alt="Tesla"
+                                                    src="static/img/tesla.png"
+                                                    width="100%"/>
+                                                <div style={{
+                                                    display: "flex",
+                                                    justifyContent: "space-around"
+                                                }}>
+                                                    <Button
+                                                        onClick={SmartCar.unlockVehicle}>
+                                                        Lock
+                                                    </Button>
+                                                    <Button
+                                                        color="primary"
+                                                        onClick={SmartCar.lockVehicle}
+                                                        variant="contained">
+                                                        Unlock
+                                                    </Button>
+                                                </div>
+                                            </>
+                                        )
+                                    }
+
+                                </div>
+                            )
+                            : (
+                                <Fab
+                                    color="secondary"
+                                    onClick={this.authorize}
+                                    style={{
+                                        position: "fixed",
+                                        bottom: 0,
+                                        right: 0,
+                                        margin: "1rem"
+                                    }}>
+                                    <AddIcon />
+                                </Fab>
+                            )
+                    }
                 </Dialog>
             </>
         );
