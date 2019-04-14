@@ -68,15 +68,27 @@ class SmartCar extends React.Component {
     };
 
     static unlockVehicle = async () => {
-        return await fetch(`${SmartCar.BACKEND_SERVER}/?method=unlock&accessToken=${SmartCar.accessToken.accessToken}`)
-            .then(response => response.json())
-            .then(data => data);
+        return await fetch(`${SmartCar.BACKEND_SERVER}/?method=unlock&vehicleId=${SmartCar.vehicle.id}&accessToken=${SmartCar.accessToken.accessToken}`)
+            .then(response => {
+                if (response.ok) {
+                    alert("Vehicle has been unlocked");
+                }
+                else {
+                    alert("Could not unlock vehicle");
+                }
+            });
     };
 
     static lockVehicle = async () => {
-        return await fetch(`${SmartCar.BACKEND_SERVER}/?method=lock&accessToken=${SmartCar.accessToken.accessToken}`)
-            .then(response => response.json())
-            .then(data => data);
+        return await fetch(`${SmartCar.BACKEND_SERVER}/?method=lock&vehicleId=${SmartCar.vehicle.id}&accessToken=${SmartCar.accessToken.accessToken}`)
+            .then(response => {
+                if (response.ok) {
+                    alert("Vehicle has been locked");
+                }
+                else {
+                    alert("Could not lock vehicle");
+                }
+            });
     };
 
     constructor(props) {
@@ -175,13 +187,13 @@ class SmartCar extends React.Component {
                                                 }}>
                                                     <Button
                                                         onClick={SmartCar.unlockVehicle}>
-                                                        Lock
+                                                        Unlock
                                                     </Button>
                                                     <Button
                                                         color="primary"
                                                         onClick={SmartCar.lockVehicle}
                                                         variant="contained">
-                                                        Unlock
+                                                        Lock
                                                     </Button>
                                                 </div>
                                             </>

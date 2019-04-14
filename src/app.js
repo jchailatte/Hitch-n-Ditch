@@ -5,6 +5,7 @@ import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import HomeIcon from "@material-ui/icons/Home";
 import AccountIcon from "@material-ui/icons/Person";
+import Paper from "@material-ui/core/Paper";
 
 import Login from "./pages/login";
 import Reserve from "./pages/reserve";
@@ -45,6 +46,9 @@ class App extends React.Component {
                             <Route path="/driving" component={Driving} />
                         </Router>
                     </div>
+                    <Paper style={{
+                        width: "100%"
+                    }}>
                     <BottomNavigation
                         value={this.state.value}
                         onChange={this.handleBottomNav}
@@ -53,6 +57,7 @@ class App extends React.Component {
                         <BottomNavigationAction label="Main" icon={<HomeIcon />} />
                         <BottomNavigationAction label="Account" icon={<AccountIcon />} />
                     </BottomNavigation>
+                    </Paper>
                 </div>
             </CssBaseline>
         );

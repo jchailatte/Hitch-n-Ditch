@@ -67,7 +67,7 @@ class Driving extends React.Component {
                         position: "fixed",
                         bottom: 0,
                         right: 0,
-                        margin: "1rem"
+                        margin: "1rem 1rem 4.5rem"
                     }}>
                     <CloseIcon />
                 </Fab>
