@@ -4,7 +4,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import HomeIcon from "@material-ui/icons/Home";
-import CarIcon from "@material-ui/icons/TimeToLeave";
 import AccountIcon from "@material-ui/icons/Person";
 
 import Login from "./pages/login";
@@ -12,6 +11,7 @@ import Reserve from "./pages/reserve";
 import DriverRider from "./pages/driver-rider";
 import Finding from "./pages/finding";
 import Driving from "./pages/driving";
+import SmartCar from "./components/smartcar";
 
 class App extends React.Component {
     constructor(props) {
@@ -49,7 +49,7 @@ class App extends React.Component {
                         value={this.state.value}
                         onChange={this.handleBottomNav}
                         showLabels>
-                        <BottomNavigationAction label="Your Car" icon={<CarIcon />} />
+                        <SmartCar/>
                         <BottomNavigationAction label="Main" icon={<HomeIcon />} />
                         <BottomNavigationAction label="Account" icon={<AccountIcon />} />
                     </BottomNavigation>
