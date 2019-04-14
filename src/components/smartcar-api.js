@@ -2,7 +2,7 @@ import React from "react";
 import Smartcar from "@smartcar/auth";
 import Vehicle from './vehicle';
 
-const REACT_APP_SERVER = 'http://localhost:8000';
+const REACT_APP_SERVER = 'https://us-central1-hacksc-2019-1555206075460.cloudfunctions.net/hnd';
 
 export default class SmartcarApi extends React.Component {
     constructor(props) {
