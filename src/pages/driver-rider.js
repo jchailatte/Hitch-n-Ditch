@@ -206,7 +206,7 @@ class DriverRider extends React.Component {
                         focusVisibleClassName={classes.focusVisible}
                         onClick={this.enableDriver}
                         style={{
-                            filter: this.state.isDriver ? "default" : "grayscale(100%)"
+                            filter: this.state.isDriver ? "" : "grayscale(100%)"
                         }}>
                         <span
                             className={classes.imageSrc}
