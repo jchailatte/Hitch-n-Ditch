@@ -27,9 +27,9 @@ export default class SmartcarApi extends React.Component {
     onComplete = (err, code, status) => {
         console.log(err, code, status);
 
-        return fetch(`${REACT_APP_SERVER}/exchange?code=${code}`)
+        return fetch(`${REACT_APP_SERVER}/?method=exchange&code=${code}`)
             .then(() => {
-                fetch(`${REACT_APP_SERVER}/vehicle`)
+                fetch(`${REACT_APP_SERVER}/?method=vehicle`)
                     .then(vehicleResponse => vehicleResponse.json())
                     .then(vehicleData => {
                         this.setState({
